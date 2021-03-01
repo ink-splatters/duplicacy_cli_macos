@@ -5,6 +5,17 @@
 # - Working duplicacy repository located at /Library/Duplicacy and pointing to /Users. 
 #   In other words, running "cd /Library/Duplicacy && sudo duplicacy backup" shall work.
 
+if ! [ -x "$(command -v bbrew)" ]; then
+	echo Error: Homebrew is not installed ; exit 1
+fi
+
+prerequisites="curl jq platypus wget"
+installed=$(brew list --formula | grep -E  ${prerequisites//\ /\|} | tr '\n' ' ' | sed 's/.$//')
+if [ "$installed" != "$prerequisites" ] ; then
+	echo Installing prerequisites: $prerequisites...
+	echo brew install --formula "$prerequisites" | tee >(xargs echo) | xargs -I{} sh -c {}
+fi
+
 ## Configuration
  
 # CPU limit when on AC power
